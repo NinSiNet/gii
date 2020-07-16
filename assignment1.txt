@@ -1,0 +1,83 @@
+
+mysql> select*from menu;
++-----+--------+--------------+
+| mid | mname  | mdescription |
++-----+--------+--------------+
+| m1  | coffee | good coffee  |
+| m2  | milk   | good milk    |
+| m3  | cake   | good cake    |
+| m4  | rice   | good rice    |
++-----+--------+--------------+
+4 rows in set (0.03 sec)
+
+
+
+mysql> select*from foodf;
++-----+-----------------+--------+------+
+| fid | fname           | fprice | mid  |
++-----+-----------------+--------+------+
+| f1  | chicken rice    | 2000   | m4   |
+| f2  |  cheese cake    | 3000   | m3   |
+| f3  | hotmilk         | 2000   | m2   |
+| f4  | black coffee    | 2000   | m1   |
+| f5  | strawberry cake | 2000   | m3   |
+| f6  | ice coffee      | 2000   | m1   |
+| f7  | fried rice      | 2000   | m4   |
++-----+-----------------+--------+------+
+7 rows in set (0.00 sec)
+
+
+
+mysql> select*from orders;
++-----+------------+------+------+-------+-------------+
+| oid | sale_date  | qty  | fid  | price | total_price |
++-----+------------+------+------+-------+-------------+
+| o1  | 2020-02-20 |    3 | f1   |   100 | 1000        |
+| o2  | 2020-03-20 |    4 | f2   |   200 | 2000        |
+| o3  | 2020-04-20 |    4 | f3   |   300 | 3000        |
+| o4  | 2020-05-20 |    5 | f4   |   400 | 4000        |
+| o5  | 2020-06-20 |    7 | f5   |   500 | 5000        |
+| o6  | 2020-07-20 |    8 | f7   |   600 | 6000        |
+| o7  | 2020-08-20 |    9 | f7   |   700 | 7000        |
++-----+------------+------+------+-------+-------------+
+7 rows in set (0.00 sec)
+
+mysql> select foodf.fname,orders.total_price from foodf,orders where orders.total_price in (select max(orders.total_price)from orders)group by orders.fid;
++--------------+-------------+
+| fname        | total_price |
++--------------+-------------+
+|  cheese cake | 7000        |
++--------------+-------------+
+1 row in set (0.43 sec)
+
+mysql> select foodf.fname,orders.total_price from foodf,orders where orders.total_price in (select min(orders.total_price)from orders)group by orders.fid;
++--------------+-------------+
+| fname        | total_price |
++--------------+-------------+
+|  cheese cake | 1000        |
++--------------+-------------+
+1 row in set (0.01 sec)
+
+mysql> select orders.sale_date,sum(orders.total_price) as sale_amount from orders group by orders.sale_date;
++------------+-------------+
+| sale_date  | sale_amount |
++------------+-------------+
+| 2020-02-20 |        1000 |
+| 2020-03-20 |        2000 |
+| 2020-04-20 |        3000 |
+| 2020-05-20 |        4000 |
+| 2020-06-20 |        5000 |
+| 2020-07-20 |        6000 |
+| 2020-08-20 |        7000 |
++------------+-------------+
+7 rows in set (0.04 sec)
+
+mysql> select orders.sale_date as date,sum(orders.total_price) as total from orders where sale_date between "2020-3-20" and "2020-7-20" ;
++------------+-------+
+| date       | total |
++------------+-------+
+| 2020-03-20 | 20000 |
++------------+-------+
+1 row in set (0.05 sec)
+
+mysql>
